@@ -1,0 +1,221 @@
+DEFINE SCHEMA
+
+    CREATE ROLE Team;
+    CREATE ROLE Admin;
+    CREATE ROLE Root;
+
+    RECORD TYPE ActivityQueryItem (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        combinerTag     STRING QUERYABLE,
+        value           STRING QUERYABLE,
+        GRANT WRITE TO "_creator",
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE ActivityTimelineFilter (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        filter          STRING QUERYABLE,
+        type            STRING QUERYABLE,
+        GRANT WRITE TO "_creator",
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE BlogPost (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        author          REFERENCE QUERYABLE,
+        content         STRING QUERYABLE,
+        headerImage     ASSET,
+        tags            LIST<STRING> QUERYABLE,
+        title           STRING QUERYABLE,
+        GRANT CREATE, WRITE TO Team,
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE FAQItem (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        answer_en       STRING,
+        comment_en      STRING,
+        index           INT64 SORTABLE,
+        question_en     STRING,
+        GRANT CREATE, WRITE TO Admin,
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE GDPRRequest (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE QUERYABLE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        fulfilledAt     TIMESTAMP,
+        scholar         REFERENCE QUERYABLE,
+        status          STRING QUERYABLE,
+        type            STRING QUERYABLE,
+        GRANT READ, WRITE TO "_creator",
+        GRANT CREATE TO "_icloud"
+    );
+
+    RECORD TYPE Scholar (
+        "___createTime"   TIMESTAMP,
+        "___createdBy"    REFERENCE,
+        "___etag"         STRING,
+        "___modTime"      TIMESTAMP,
+        "___modifiedBy"   REFERENCE,
+        "___recordID"     REFERENCE QUERYABLE,
+        biography         STRING,
+        birthday          TIMESTAMP,
+        email             STRING QUERYABLE,
+        familyName        STRING QUERYABLE SORTABLE,
+        gdprConsentAt     TIMESTAMP QUERYABLE SORTABLE,
+        gender            STRING,
+        givenName         STRING QUERYABLE SORTABLE,
+        location          LOCATION,
+        profilePicture    ASSET,
+        scholarPrivate    REFERENCE,
+        socialMedia       REFERENCE,
+        wwdcYearInfos     LIST<REFERENCE>,
+        wwdcYears         LIST<REFERENCE> QUERYABLE,
+        wwdcYearsApproved LIST<REFERENCE> QUERYABLE,
+        GRANT WRITE TO Admin,
+        GRANT WRITE TO "_creator",
+        GRANT CREATE, WRITE TO "_icloud",
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE ScholarPrivate (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE QUERYABLE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        birthday        TIMESTAMP,
+        email           STRING QUERYABLE,
+        scholar         REFERENCE,
+        GRANT READ TO Admin,
+        GRANT READ TO Root,
+        GRANT READ, WRITE TO "_creator",
+        GRANT CREATE TO "_icloud"
+    );
+
+    RECORD TYPE ScholarSocialMedia (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        bluesky         STRING,
+        discord         STRING,
+        facebook        STRING,
+        github          STRING,
+        imessage        STRING,
+        instagram       STRING,
+        itunes          STRING,
+        linkedin        STRING,
+        mastodon        STRING,
+        scholar         REFERENCE QUERYABLE,
+        threads         STRING,
+        twitter         STRING QUERYABLE,
+        website         STRING,
+        GRANT WRITE TO "_creator",
+        GRANT CREATE, WRITE TO "_icloud",
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE TeamMember (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        biography       STRING,
+        birthday        TIMESTAMP,
+        isActive        INT64 QUERYABLE,
+        name            STRING SORTABLE,
+        picture         ASSET,
+        scholar         REFERENCE,
+        GRANT WRITE TO "_creator",
+        GRANT CREATE TO "_icloud",
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE Users (
+        "___createTime" TIMESTAMP,
+        "___createdBy"  REFERENCE,
+        "___etag"       STRING,
+        "___modTime"    TIMESTAMP,
+        "___modifiedBy" REFERENCE,
+        "___recordID"   REFERENCE QUERYABLE,
+        roles           LIST<INT64>,
+        scholar         REFERENCE QUERYABLE,
+        GRANT WRITE TO Root,
+        GRANT WRITE TO "_creator",
+        GRANT READ TO "_icloud"
+    );
+
+    RECORD TYPE WWDCYear (
+        "___createTime"      TIMESTAMP,
+        "___createdBy"       REFERENCE,
+        "___etag"            STRING,
+        "___modTime"         TIMESTAMP,
+        "___modifiedBy"      REFERENCE,
+        "___recordID"        REFERENCE QUERYABLE,
+        challengeDescription STRING,
+        features             LIST<STRING> QUERYABLE,
+        isHidden             INT64 QUERYABLE,
+        name                 STRING,
+        year                 STRING QUERYABLE SORTABLE,
+        GRANT CREATE, WRITE TO Admin,
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE WWDCYearInfo (
+        "___createTime"       TIMESTAMP,
+        "___createdBy"        REFERENCE,
+        "___etag"             STRING,
+        "___modTime"          TIMESTAMP,
+        "___modifiedBy"       REFERENCE,
+        "___recordID"         REFERENCE QUERYABLE,
+        acceptanceEmail       ASSET,
+        appType               STRING,
+        appliedAs             STRING,
+        appstoreLink          STRING,
+        description           STRING,
+        githubLink            STRING,
+        isDistinguishedWinner INT64 QUERYABLE,
+        reviewedAt            TIMESTAMP,
+        reviewedBy            REFERENCE,
+        scholar               REFERENCE QUERYABLE,
+        screenshots           LIST<ASSET>,
+        status                STRING QUERYABLE,
+        videoLink             STRING,
+        year                  REFERENCE QUERYABLE,
+        GRANT WRITE TO Admin,
+        GRANT WRITE TO Team,
+        GRANT WRITE TO "_creator",
+        GRANT CREATE, WRITE TO "_icloud",
+        GRANT READ TO "_world"
+    );
