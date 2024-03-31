@@ -34,6 +34,7 @@ async function exportSchema(environment: CKEnvironment, filename: string) {
     console.log(`Schema downloaded to ${destPath}`)
   } catch (error) {
     console.error(configuration.jsonStringify(error, null, 2))
+    process.exit(1)
   }
 }
 

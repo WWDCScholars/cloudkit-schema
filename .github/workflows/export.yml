@@ -1,0 +1,49 @@
+name: Export Schema
+
+on:
+  schedule:
+    - cron: '41 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
+    defaults:
+      run:
+        working-directory: ./exporter
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'yarn'
+        cache-dependency-path: exporter/yarn.lock
+    - run: yarn install --frozen-lockfile
+
+    - name: Export development schema
+      env:
+        CKTOOL_MGMT_TOKEN: ${{ secrets.CKTOOL_MGMT_TOKEN }}
+        TEAM_ID: ${{ secrets.TEAM_ID }}
+        CONTAINER_ID: ${{ secrets.CONTAINER_ID }}
+      run: yarn start development
+
+    - name: Export production schema
+      env:
+        CKTOOL_MGMT_TOKEN: ${{ secrets.CKTOOL_MGMT_TOKEN }}
+        TEAM_ID: ${{ secrets.TEAM_ID }}
+        CONTAINER_ID: ${{ secrets.CONTAINER_ID }}
+      run: yarn start production
+
+    # Commit all changed files back to the repository
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Export schema
+        file_pattern: '*.ckdb'
