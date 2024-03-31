@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "name": "cloudkit-schema",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node -r tsconfig-paths/register src/index.ts"
+  },
+  "dependencies": {
+    "@apple/cktool.database": "^1.3.2",
+    "@apple/cktool.target.nodejs": "^1.3.2",
+    "@types/node": "^20.12.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.3"
+  }
+}
